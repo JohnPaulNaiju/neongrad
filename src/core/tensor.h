@@ -1,0 +1,31 @@
+// Created by John Paul Naiju on June 1, 2026
+
+#pragma once
+
+#include <vector>
+#include <cstddef>
+
+typedef std::vector<size_t> array_t;
+
+class Tensor {
+
+public:
+    explicit Tensor(const array_t& shape);
+    ~Tensor();
+
+    float& operator[](size_t index);
+    float operator[](size_t index) const;
+
+    void fill_zeros() const;
+
+    template <typename... Args>
+    float& operator()(Args... indices){
+        std::size_t coords[] = { static_cast<std::size_t>(indices)... };
+    }
+
+private:
+    float* data_ = nullptr;
+    array_t shape_;
+    array_t strides_;
+    std::size_t size_;
+};
