@@ -1,4 +1,1 @@
-# High-Performance Deep Learning Engine - C++20 | ARM NEON
-
-
-
+# High-Performance Deep Learning Engine (scratch) | C++, ARM NEON

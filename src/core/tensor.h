@@ -16,11 +16,35 @@ public:
     float& operator[](size_t index);
     float operator[](size_t index) const;
 
-    void fill_zeros() const;
+    void fill_zeros();
 
     template <typename... Args>
     float& operator()(Args... indices){
         std::size_t coords[] = { static_cast<std::size_t>(indices)... };
+
+        std::size_t index = 0;
+
+        for (int i = 0; i < sizeof...(Args); ++i) {
+            index += coords[i] * strides_[i];
+        }
+
+        return data_[index];
+    }
+
+    [[nodiscard]] const array_t& shape() const {
+        return shape_;
+    }
+
+    [[nodiscard]] const float* data() const {
+        return data_;
+    }
+
+    [[nodiscard]] std::size_t size() const {
+        return size_;
+    }
+
+    [[nodiscard]] std::size_t ndim() const {
+        return shape_.size();
     }
 
 private:

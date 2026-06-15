@@ -37,6 +37,6 @@ float Tensor::operator[](const size_t index) const {
     return data_[index];
 }
 
-void Tensor::fill_zeros() const {
+void Tensor::fill_zeros() {
     std::memset(data_, 0, size_ * sizeof(float));
 }
