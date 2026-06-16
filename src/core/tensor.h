@@ -13,6 +13,12 @@ public:
     explicit Tensor(const array_t& shape);
     ~Tensor();
 
+    Tensor(const Tensor& tensor);
+    Tensor& operator=(const Tensor& tensor);
+
+    Tensor(Tensor&& tensor) noexcept;
+    Tensor& operator=(Tensor&& tensor) noexcept;
+
     float& operator[](size_t index);
     float operator[](size_t index) const;
 
