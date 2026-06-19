@@ -1,8 +1,7 @@
 // Created by John Paul Naiju on June 1, 2026
 
 #include "core/tensor.h"
-#include <cstdlib>
-#include <cstring>
+#include <iostream>
 
 typedef std::vector<size_t> array_t;
 
@@ -58,11 +57,13 @@ Tensor& Tensor::operator=(const Tensor& tensor) {
 }
 
 Tensor::Tensor(Tensor&& tensor) noexcept
-    : data_(tensor.data_), shape_(tensor.shape_), strides_(tensor.strides_), size_(tensor.size_) {
+    : data_(tensor.data_),
+    shape_(std::move(tensor.shape_)),
+    strides_(std::move(tensor.strides_)),
+    size_(tensor.size_)
+{
     tensor.data_ = nullptr;
     tensor.size_ = 0;
-    tensor.shape_.clear();
-    tensor.strides_.clear();
 }
 
 Tensor& Tensor::operator=(Tensor&& tensor) noexcept {
@@ -89,6 +90,44 @@ float Tensor::operator[](const size_t index) const {
     return data_[index];
 }
 
-void Tensor::fill_zeros() {
+void Tensor::fill_zeros() const {
     std::memset(data_, 0, size_ * sizeof(float));
+}
+
+void Tensor::print() const {
+    std::cout << "Tensor shape: [";
+    for (const unsigned long i : shape_) {
+        std::cout << i << ", ";
+    }
+    std::cout << "]\n";
+
+    if (size_ == 0) {
+        std::cout << "Empty tensor\n";
+        return;
+    }
+
+    if (shape_.size() == 1) {
+        std::cout << "[";
+        for (std::size_t i = 0; i < size_; ++i) {
+            std::cout << data_[i] << ", ";
+        }
+        std::cout << "]\n";
+    }else if (shape_.size() == 2) {
+        for (std::size_t r = 0; r < shape_[0]; ++r) {
+            std::cout << "[";
+            for (std::size_t c = 0; c < shape_[1]; ++c) {
+                std::cout << data_[r * shape_[1] + c] << ", ";
+            }
+            std::cout << "]\n";
+        }
+    }else {
+        const std::size_t limit = std::min(size_, static_cast<std::size_t>(10));
+        for (std::size_t i = 0; i < limit; ++i) {
+            std::cout << data_[i] << ", ";
+        }
+        if (size_ > 10) {
+            std::cout << ", ... , " << data_[size_ - 1];
+        }
+        std::cout << "]\n";
+    }
 }

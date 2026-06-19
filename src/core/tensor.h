@@ -22,8 +22,6 @@ public:
     float& operator[](size_t index);
     float operator[](size_t index) const;
 
-    void fill_zeros();
-
     template <typename... Args>
     float& operator()(Args... indices){
         std::size_t coords[] = { static_cast<std::size_t>(indices)... };
@@ -52,6 +50,10 @@ public:
     [[nodiscard]] std::size_t ndim() const {
         return shape_.size();
     }
+
+    void fill_zeros() const;
+
+    void print() const;
 
 private:
     float* data_ = nullptr;
