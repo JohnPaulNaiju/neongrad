@@ -1,8 +1,3 @@
-// ============================================================================
-// main_infer.cpp — Inference Entry Point
-// ============================================================================
-// Phase 8: This will load saved weights and classify input images.
-
 #include <iostream>
 
 int main() {

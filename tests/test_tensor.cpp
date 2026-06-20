@@ -1,16 +1,25 @@
-// ============================================================================
-// test_tensor.cpp — Tests for the Tensor class
-// ============================================================================
-// Phase 2: You'll add tests here as you implement the Tensor class.
-//
-// We use a simple assert-based approach (no test framework needed).
-// If an assertion fails, the program crashes with file:line info.
-
-#include "core/tensor.h"
-#include <cassert>
 #include <iostream>
+#include <cassert>
+#include "core/tensor.h"
 
 int main() {
-    std::cout << "[test_tensor] All tests passed (0 tests implemented)" << std::endl;
+    {
+        const Tensor tensor({3, 4});
+        assert(tensor.ndim() == 2);
+        assert(tensor.shape()[0] == 3);
+        assert(tensor.shape()[1] == 4);
+        assert(tensor.size() == 12);
+
+        std::cout << "Test 1 passed ✅ [constructor shape and size] \n";
+    }
+
+    {
+        const Tensor tensor({8, 8});
+        assert(tensor.data() != nullptr);
+        auto addr = reinterpret_cast<std::uintptr_t>(tensor.data());
+        assert(addr % 64 == 0);
+
+        std::cout << "Test 2 passed ✅ [memory alignment] \n";
+    }
     return 0;
 }

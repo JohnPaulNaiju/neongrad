@@ -29,7 +29,8 @@ Tensor::~Tensor() {
     data_ = nullptr;
 }
 
-Tensor::Tensor(const Tensor& tensor) : shape_(tensor.shape_), strides_(tensor.strides_), size_(tensor.size_) {
+Tensor::Tensor(const Tensor& tensor)
+    : shape_(tensor.shape_), strides_(tensor.strides_), size_(tensor.size_) {
     const std::size_t bytes = size_ * sizeof(float);
     const std::size_t aligned_bytes = ((bytes + 63) / 64) * 64;
     data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
