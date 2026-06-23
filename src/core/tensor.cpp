@@ -20,7 +20,7 @@ Tensor::Tensor(const array_t& shape) {
     }
 
     const std::size_t bytes = size_ * sizeof(float);
-    const std::size_t aligned_bytes = ((bytes + 63) / 64) * 64;
+    const std::size_t aligned_bytes = (bytes + 63) & ~63;
     data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
 }
 
@@ -32,7 +32,7 @@ Tensor::~Tensor() {
 Tensor::Tensor(const Tensor& tensor)
     : shape_(tensor.shape_), strides_(tensor.strides_), size_(tensor.size_) {
     const std::size_t bytes = size_ * sizeof(float);
-    const std::size_t aligned_bytes = ((bytes + 63) / 64) * 64;
+    const std::size_t aligned_bytes = (bytes + 63) & ~63;
     data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
     if (size_ > 0) {
         std::memcpy(data_, tensor.data_, size_ * sizeof(float));
@@ -48,7 +48,7 @@ Tensor& Tensor::operator=(const Tensor& tensor) {
     size_ = tensor.size_;
 
     const std::size_t bytes = size_ * sizeof(float);
-    const std::size_t aligned_bytes = ((bytes + 63) / 64) * 64;
+    const std::size_t aligned_bytes = (bytes + 63) & ~63;
     data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
     if (size_ > 0) {
         std::memcpy(data_, tensor.data_, size_ * sizeof(float));
