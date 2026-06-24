@@ -28,7 +28,7 @@ public:
 
         std::size_t index = 0;
 
-        for (int i = 0; i < sizeof...(Args); ++i) {
+        for (int i = 0; i < static_cast<int>(sizeof...(Args)); ++i) {
             index += coords[i] * strides_[i];
         }
 
