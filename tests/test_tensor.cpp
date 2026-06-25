@@ -95,7 +95,7 @@ int main() {
         assert(tensor2.size() == 4);
         assert(tensor2[0] == 1.0f);
 
-        std::cout << "Test 7 passed ✅ [move constructor] \n";
+        std::cout << "Test 8 passed ✅ [move constructor] \n";
     }
 
     {
