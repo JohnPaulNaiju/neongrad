@@ -17,6 +17,7 @@ target_include_directories(lodepng PUBLIC third_party/lodepng)
 
 add_library(nn_core STATIC
         src/core/tensor.cpp
+        src/core/tensor_math.cpp
 )
 target_include_directories(nn_core PUBLIC src)
 target_link_libraries(nn_core PUBLIC lodepng)
