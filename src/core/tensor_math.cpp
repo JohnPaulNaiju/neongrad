@@ -1,7 +1,7 @@
 #include "core/tensor_math.h"
 #include <cassert>
 
-Tensor gemm_ikj(Tensor& A, Tensor& B) {
+Tensor gemm_ikj(const Tensor& A, const Tensor& B) {
 
     const std::size_t m1 = A.shape().rbegin()[1];
     const std::size_t n1 = A.shape().back();
@@ -18,7 +18,7 @@ Tensor gemm_ikj(Tensor& A, Tensor& B) {
         for (std::size_t k = 0; k < n1; ++k) {
             const float a_ik = A(i, k);
             for (std::size_t j = 0; j < n2; ++j) {
-                C(i, j) = a_ik * B(k, j);
+                C(i, j) += a_ik * B(k, j);
             }
         }
     }

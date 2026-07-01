@@ -35,6 +35,19 @@ public:
         return data_[index];
     }
 
+    template <typename... Args>
+    float operator()(Args... indices) const {
+        std::size_t coords[] = { static_cast<std::size_t>(indices)... };
+
+        std::size_t index = 0;
+
+        for (int i = 0; i < static_cast<int>(sizeof...(Args)); ++i) {
+            index += coords[i] * strides_[i];
+        }
+
+        return data_[index];
+    }
+
     [[nodiscard]] const array_t& shape() const {
         return shape_;
     }
