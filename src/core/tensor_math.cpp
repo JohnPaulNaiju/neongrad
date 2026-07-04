@@ -1,5 +1,6 @@
 #include "core/tensor_math.h"
 #include <cassert>
+#include <arm_neon.h>
 
 Tensor gemm_ikj(const Tensor& A, const Tensor& B) {
 
@@ -14,9 +15,14 @@ Tensor gemm_ikj(const Tensor& A, const Tensor& B) {
 
     C.fill_zeros();
 
+    const float* a_ptr = A.data();
+    const float* b_ptr = B.data();
+    float* c_ptr = C.data();
+
     for (std::size_t i = 0; i < m1; ++i) {
         for (std::size_t k = 0; k < n1; ++k) {
             const float a_ik = A(i, k);
+
             for (std::size_t j = 0; j < n2; ++j) {
                 C(i, j) += a_ik * B(k, j);
             }

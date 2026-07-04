@@ -56,6 +56,10 @@ public:
         return data_;
     }
 
+    [[nodiscard]] float* data() {
+        return data_;
+    }
+
     [[nodiscard]] std::size_t size() const {
         return size_;
     }
