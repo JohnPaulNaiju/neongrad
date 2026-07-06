@@ -25,8 +25,15 @@ target_link_libraries(nn_core PUBLIC lodepng)
 add_executable(nn_train src/main_train.cpp)
 target_link_libraries(nn_train PRIVATE nn_core)
 
-enable_testing()
+add_executable(benchmark_gemm benchmarks/benchmark_gemm.cpp)
+target_link_libraries(benchmark_gemm PRIVATE nn_core)
 
-add_executable(test_tensor tests/test_tensor.cpp)
-target_link_libraries(test_tensor PRIVATE nn_core)
-add_test(NAME TensorTest COMMAND test_tensor)
+option(BUILD_TESTS "Build test executables" OFF)
+
+if(BUILD_TESTS)
+    enable_testing()
+
+    add_executable(test_tensor tests/test_tensor.cpp)
+    target_link_libraries(test_tensor PRIVATE nn_core)
+    add_test(NAME TensorTest COMMAND test_tensor)
+endif()
