@@ -1,6 +1,5 @@
 #include "core/tensor_math.h"
 #include <arm_neon.h>
-#include <algorithm>
 
 constexpr std::size_t tile_size = 64;
 constexpr std::size_t j_tile_size = 256;
