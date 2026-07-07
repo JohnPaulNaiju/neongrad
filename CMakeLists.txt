@@ -12,6 +12,9 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "build type" FORCE)
 endif()
 
+set(OpenMP_ROOT "/opt/homebrew/opt/libomp")
+find_package(OpenMP REQUIRED)
+
 add_library(lodepng STATIC third_party/lodepng/lodepng.cpp)
 target_include_directories(lodepng PUBLIC third_party/lodepng)
 
@@ -27,6 +30,10 @@ set_source_files_properties(src/core/gemm_naive.cpp
 
 target_include_directories(nn_core PUBLIC src)
 target_link_libraries(nn_core PUBLIC lodepng)
+
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(nn_core PUBLIC OpenMP::OpenMP_CXX)
+endif()
 
 add_executable(nn_train src/main_train.cpp)
 target_link_libraries(nn_train PRIVATE nn_core)

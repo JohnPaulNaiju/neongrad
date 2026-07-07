@@ -2,6 +2,7 @@
 
 #include "core/tensor_math.h"
 #include <arm_neon.h>
+#include <omp.h>
 
 constexpr std::size_t tile_size = 64;
 constexpr std::size_t j_tile_size = 256;
@@ -22,6 +23,9 @@ Tensor gemm(const Tensor& A, const Tensor& B) {
     const float* __restrict b_ptr = B.data();
     float* __restrict c_ptr = C.data();
 
+    #pragma omp parallel for default(none) \
+        shared(a_ptr, b_ptr, c_ptr, m1, n2, m1_pad, n1_pad, n2_pad) \
+        schedule(dynamic)
     for (std::size_t i_out = 0; i_out < m1_pad; i_out += tile_size) {
         for (std::size_t j_out = 0; j_out < n2_pad; j_out += j_tile_size) {
             for (std::size_t k_out = 0; k_out < n1_pad; k_out += tile_size) {
