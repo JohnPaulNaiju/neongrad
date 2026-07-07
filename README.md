@@ -32,3 +32,19 @@
 - **SIMD drops to ~15.6 at 4096** — even with tiling, some inter-tile cache pressure remains. But the drop is only 15%, vs a theoretical ~5× drop without tiling. **Tiling is protecting the throughput.**
 
 - **M1 theoretical single-core peak**: ~50 GFLOPS (1 P-core × 2 FMA pipes × 4 lanes × ~3.2 GHz × 2 ops). We're at **31-37% of peak** — reasonable for a first implementation. For more speedup like 75% we need to go assembly.
+
+### PyTorch GEMM Benchmark
+
+- Device: cpu
+- Threads: 1
+
+| Matrix Size | Time (ms) | GFLOPS
+|---|---|---|
+| 512x512 | 0.28 | 958.70         
+| 1024x1024 | 5.03 | 426.96         
+| 2048x2048 | 36.28 | 473.59         
+| 4096x4096 | 194.95 | 704.99
+
+> Why is PyTorch faster?
+> PyTorch uses Apple's Matrix Coprocessor, AMX which is a pure hardware accelerator for GEMM.
+> I can also use AMX get same results, but It is a blackbox and removes my purpose of learning.
