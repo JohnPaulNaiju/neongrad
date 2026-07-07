@@ -55,12 +55,12 @@ A from-scratch deep learning inference and training engine written in pure C++20
 
 ### Multi-Core: Tiled SIMD + OpenMP (4 Performance Cores)
 
-| Matrix Size | 1-Core SIMD (GFLOPS) | 4-Core SIMD (GFLOPS) | Core Scaling | vs Scalar |
-|---|---|---|---|---|
-| 512×512 | 18.26 | 53.53 | **2.93×** | **9.06× faster** |
-| 1024×1024 | 16.34 | 58.14 | **3.56×** | **9.60× faster** |
-| 2048×2048 | 15.76 | 62.00 | **3.93×** | **10.54× faster** |
-| 4096×4096 | 15.59 | 56.38 | **3.62×** | **9.91× faster** |
+| Matrix Size | 1-Core SIMD (GFLOPS) | 4-Core SIMD (GFLOPS) | Core Scaling | vs Scalar | Time: 1-Core → 4-Core |
+|---|---|---|---|---|---|
+| 512×512 | 18.26 | 53.53 | **2.93×** | **9.06× faster** | 14.7 ms → 5 ms |
+| 1024×1024 | 16.34 | 58.14 | **3.56×** | **9.60× faster** | 131.4 ms → 36.9 ms |
+| 2048×2048 | 15.76 | 62.00 | **3.93×** | **10.54× faster** | 1.09 s → 277.1 ms |
+| 4096×4096 | 15.59 | 56.38 | **3.62×** | **9.91× faster** | 8.82 s → 2.43 s |
 
 ---
 
