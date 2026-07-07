@@ -18,7 +18,13 @@ target_include_directories(lodepng PUBLIC third_party/lodepng)
 add_library(nn_core STATIC
         src/core/tensor.cpp
         src/core/tensor_math.cpp
+        src/core/gemm_naive.cpp
 )
+
+set_source_files_properties(src/core/gemm_naive.cpp
+        PROPERTIES COMPILE_FLAGS "-fno-vectorize -fno-slp-vectorize"
+)
+
 target_include_directories(nn_core PUBLIC src)
 target_link_libraries(nn_core PUBLIC lodepng)
 

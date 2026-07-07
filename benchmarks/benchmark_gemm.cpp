@@ -7,6 +7,7 @@
 
 #include "core/tensor.h"
 #include "core/tensor_math.h"
+#include "core/gemm_naive.h"
 
 void fill_random(Tensor& t) {
     std::random_device rd;
@@ -72,7 +73,6 @@ int main() {
 
     start_time = std::chrono::high_resolution_clock::now();
 
-    #pragma clang loop vectorize(disable) unroll(disable)
     for (int i = 0; i < 10; ++i) {
         tensor3 = gemm_naive(tensor1, tensor2);
     }
