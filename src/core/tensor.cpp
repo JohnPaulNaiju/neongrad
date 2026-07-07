@@ -11,7 +11,16 @@ Tensor::Tensor(const array_t& shape) {
 
     for (const auto i : shape_) size_ *= i;
 
-    strides_.resize(shape_.size());
+    padded_shape_ = shape_;
+    if (padded_shape_.size() >= 2) {
+        const std::size_t rank = padded_shape_.size();
+        padded_shape_[rank - 2] = (padded_shape_[rank - 2] + ALIGN_ROW - 1) / ALIGN_ROW * ALIGN_ROW;
+        padded_shape_[rank - 1] = (padded_shape_[rank - 1] + ALIGN_COL - 1) / ALIGN_COL * ALIGN_COL;
+    } else if (padded_shape_.size() == 1) {
+        padded_shape_[0] = (padded_shape_[0] + ALIGN_COL - 1) / ALIGN_COL * ALIGN_COL;
+    }
+
+    strides_.resize(padded_shape_.size());
     std::size_t current_stride = 1;
 
     for (std::size_t i = shape_.size(); i > 0; --i) {
@@ -19,9 +28,14 @@ Tensor::Tensor(const array_t& shape) {
         current_stride *= shape_[i-1];
     }
 
-    const std::size_t bytes = size_ * sizeof(float);
+    std::size_t padded_size = 1;
+    for (const auto i : padded_shape_) padded_size *= i;
+
+    const std::size_t bytes = padded_size * sizeof(float);
     const std::size_t aligned_bytes = (bytes + 63) & ~63;
     data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
+
+    std::memset(data_, 0, aligned_bytes);
 }
 
 Tensor::~Tensor() {
@@ -30,12 +44,19 @@ Tensor::~Tensor() {
 }
 
 Tensor::Tensor(const Tensor& tensor)
-    : shape_(tensor.shape_), strides_(tensor.strides_), size_(tensor.size_) {
-    const std::size_t bytes = size_ * sizeof(float);
+    : shape_(tensor.shape_),
+    padded_shape_(tensor.padded_shape_),
+    strides_(tensor.strides_),
+    size_(tensor.size_)
+{
+    std::size_t padded_size = 1;
+    for (const auto i : padded_shape_) padded_size *= i;
+
+    const std::size_t bytes = padded_size * sizeof(float);
     const std::size_t aligned_bytes = (bytes + 63) & ~63;
     data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
-    if (size_ > 0) {
-        std::memcpy(data_, tensor.data_, size_ * sizeof(float));
+    if (padded_size > 0) {
+        std::memcpy(data_, tensor.data_, aligned_bytes);
     }
 }
 
@@ -44,14 +65,18 @@ Tensor& Tensor::operator=(const Tensor& tensor) {
     if (data_ != nullptr) std::free(data_);
 
     shape_ = tensor.shape_;
+    padded_shape_ = tensor.padded_shape_;
     strides_ = tensor.strides_;
     size_ = tensor.size_;
 
-    const std::size_t bytes = size_ * sizeof(float);
+    std::size_t padded_size = 1;
+    for (const auto i : padded_shape_) padded_size *= i;
+
+    const std::size_t bytes = padded_size * sizeof(float);
     const std::size_t aligned_bytes = (bytes + 63) & ~63;
     data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
-    if (size_ > 0) {
-        std::memcpy(data_, tensor.data_, size_ * sizeof(float));
+    if (padded_size > 0) {
+        std::memcpy(data_, tensor.data_, aligned_bytes);
     }
 
     return *this;
@@ -60,6 +85,7 @@ Tensor& Tensor::operator=(const Tensor& tensor) {
 Tensor::Tensor(Tensor&& tensor) noexcept
     : data_(tensor.data_),
     shape_(std::move(tensor.shape_)),
+    padded_shape_(std::move(tensor.padded_shape_)),
     strides_(std::move(tensor.strides_)),
     size_(tensor.size_)
 {
@@ -72,6 +98,7 @@ Tensor& Tensor::operator=(Tensor&& tensor) noexcept {
     if (data_ != nullptr) std::free(data_);
 
     shape_ = std::move(tensor.shape_);
+    padded_shape_ = std::move(tensor.padded_shape_);
     strides_ = std::move(tensor.strides_);
     size_ = tensor.size_;
 
@@ -89,10 +116,6 @@ float& Tensor::operator[](const size_t index) {
 
 float Tensor::operator[](const size_t index) const {
     return data_[index];
-}
-
-void Tensor::fill_zeros() const {
-    std::memset(data_, 0, size_ * sizeof(float));
 }
 
 void Tensor::print() const {
@@ -117,7 +140,7 @@ void Tensor::print() const {
         for (std::size_t r = 0; r < shape_[0]; ++r) {
             std::cout << "[";
             for (std::size_t c = 0; c < shape_[1]; ++c) {
-                std::cout << data_[r * shape_[1] + c] << ", ";
+                std::cout << data_[r * strides_[0] + c] << ", ";
             }
             std::cout << "]\n";
         }

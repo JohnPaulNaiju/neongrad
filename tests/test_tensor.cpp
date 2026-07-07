@@ -48,7 +48,6 @@ int main() {
 
     {
         Tensor tensor({2, 2});
-        tensor.fill_zeros();
         const float* data = tensor.data();
         for (std::size_t i = 0; i < tensor.size(); i++) {
             assert(data[i] == 0);

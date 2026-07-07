@@ -10,6 +10,9 @@ typedef std::vector<size_t> array_t;
 class Tensor {
 
 public:
+    static constexpr std::size_t ALIGN_ROW = 64;
+    static constexpr std::size_t ALIGN_COL = 256;
+
     explicit Tensor(const array_t& shape);
     ~Tensor();
 
@@ -52,6 +55,10 @@ public:
         return shape_;
     }
 
+    [[nodiscard]] const array_t& padded_shape() const {
+        return padded_shape_;
+    }
+
     [[nodiscard]] const float* data() const {
         return data_;
     }
@@ -68,13 +75,12 @@ public:
         return shape_.size();
     }
 
-    void fill_zeros() const;
-
     void print() const;
 
 private:
     float* data_ = nullptr;
     array_t shape_;
+    array_t padded_shape_;
     array_t strides_;
     std::size_t size_;
 };

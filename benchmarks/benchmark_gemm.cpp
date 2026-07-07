@@ -22,9 +22,12 @@ void fill_random(Tensor& t) {
 
 int main() {
 
-    constexpr int size = 512;
+    std::size_t size = 512;
 
-    std::cout << "Matrix size: " << size << "x" << size << "\n";
+    std::cout << "Enter square matrix size:";
+    std::cin >> size;
+
+    std::cout << "\nMatrix size: " << size << "x" << size << "\n";
 
     Tensor tensor1({size, size});
     Tensor tensor2({size, size});
@@ -41,7 +44,7 @@ int main() {
 
     std::cout << "+-----------------------------------+\n";
 
-    std::cout << "SIMD GEMM BENCHMARK\n";
+    std::cout << "Tiled SIMD GEMM BENCHMARK\n";
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
@@ -56,7 +59,7 @@ int main() {
     std::chrono::duration<double> total_duration = end_time - start_time;
     double avg_time_sec = total_duration.count() / 10;
 
-    constexpr double total_ops = 2.0 * size * size * size;
+    const double total_ops = 2.0 * static_cast<double>(size * size * size);
 
     double gflops = total_ops / (avg_time_sec * 1e9);
 
@@ -69,6 +72,7 @@ int main() {
 
     start_time = std::chrono::high_resolution_clock::now();
 
+    #pragma clang loop vectorize(disable) unroll(disable)
     for (int i = 0; i < 10; ++i) {
         tensor3 = gemm_naive(tensor1, tensor2);
     }
