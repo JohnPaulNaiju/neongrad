@@ -3,7 +3,7 @@
 #include "core/tensor.h"
 #include <iostream>
 
-typedef std::vector<size_t> array_t;
+typedef std::vector<std::size_t> array_t;
 
 Tensor::Tensor(const array_t& shape) {
     shape_ = shape;

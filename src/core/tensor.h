@@ -5,7 +5,7 @@
 #include <vector>
 #include <cstddef>
 
-typedef std::vector<size_t> array_t;
+typedef std::vector<std::size_t> array_t;
 
 class Tensor {
 
@@ -26,7 +26,7 @@ public:
     float operator[](size_t index) const;
 
     template <typename... Args>
-    float& operator()(Args... indices){
+    float& operator()(Args... indices) {
         std::size_t coords[] = { static_cast<std::size_t>(indices)... };
 
         std::size_t index = 0;
