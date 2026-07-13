@@ -8,7 +8,7 @@ constexpr std::size_t tile_size = 64;
 constexpr std::size_t j_tile_size = 256;
 
 // ikj GEMM with SIMD, Loop Unrolling and Cache Tiling
-Tensor gemm(const Tensor& A, const Tensor& B) {
+Tensor gemm(const Tensor& A, const Tensor& B, const Tensor& bias) {
 
     const std::size_t m1 = A.shape().rbegin()[1];
     const std::size_t n2 = B.shape().back();
@@ -23,8 +23,10 @@ Tensor gemm(const Tensor& A, const Tensor& B) {
     const float* __restrict b_ptr = B.data();
     float* __restrict c_ptr = C.data();
 
+    const float* __restrict bias_ptr = bias.data();
+
     #pragma omp parallel for default(none) \
-        shared(a_ptr, b_ptr, c_ptr, m1, n2, m1_pad, n1_pad, n2_pad) \
+        shared(a_ptr, b_ptr, c_ptr, bias_ptr, m1, n2, m1_pad, n1_pad, n2_pad) \
         schedule(dynamic)
     for (std::size_t i_out = 0; i_out < m1_pad; i_out += tile_size) {
         for (std::size_t j_out = 0; j_out < n2_pad; j_out += j_tile_size) {
