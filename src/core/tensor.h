@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <cstddef>
+#include <memory>
 
 typedef std::vector<std::size_t> array_t;
 
@@ -14,13 +15,14 @@ public:
     static constexpr std::size_t ALIGN_COL = 256;
 
     explicit Tensor(const array_t& shape);
-    ~Tensor();
 
-    Tensor(const Tensor& tensor);
-    Tensor& operator=(const Tensor& tensor);
+    Tensor(const Tensor& tensor) = default;
+    Tensor& operator=(const Tensor& tensor) = default;
 
-    Tensor(Tensor&& tensor) noexcept;
-    Tensor& operator=(Tensor&& tensor) noexcept;
+    Tensor(Tensor&& tensor) noexcept = default;
+    Tensor& operator=(Tensor&& tensor) noexcept = default;
+
+    ~Tensor() = default;
 
     float& operator[](size_t index);
     float operator[](size_t index) const;
@@ -35,7 +37,7 @@ public:
             index += coords[i] * strides_[i];
         }
 
-        return data_[index];
+        return data_.get()[index];
     }
 
     template <typename... Args>
@@ -48,7 +50,7 @@ public:
             index += coords[i] * strides_[i];
         }
 
-        return data_[index];
+        return data_.get()[index];
     }
 
     [[nodiscard]] const array_t& shape() const {
@@ -60,11 +62,11 @@ public:
     }
 
     [[nodiscard]] const float* data() const {
-        return data_;
+        return data_.get();
     }
 
     [[nodiscard]] float* data() {
-        return data_;
+        return data_.get();
     }
 
     [[nodiscard]] std::size_t size() const {
@@ -78,7 +80,7 @@ public:
     void print() const;
 
 private:
-    float* data_ = nullptr;
+    std::shared_ptr<float> data_ = nullptr;
     array_t shape_;
     array_t padded_shape_;
     array_t strides_;

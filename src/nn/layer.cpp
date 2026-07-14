@@ -6,7 +6,7 @@ Dense::Dense(std::size_t input_dim, std::size_t output_dim, std::size_t batch_si
     bias_({1, output_dim}),
     cache_({batch_size, input_dim})
 {
-    // initialize the weight matrix
+    // initialize the weight and bias matrix
 }
 
 Tensor Dense::forward(const Tensor& tensor) {

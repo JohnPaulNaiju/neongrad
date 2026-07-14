@@ -25,7 +25,7 @@ Tensor::Tensor(const array_t& shape) {
 
     for (std::size_t i = shape_.size(); i > 0; --i) {
         strides_[i-1] = current_stride;
-        current_stride *= shape_[i-1];
+        current_stride *= padded_shape_[i-1];
     }
 
     std::size_t padded_size = 1;
@@ -33,89 +33,19 @@ Tensor::Tensor(const array_t& shape) {
 
     const std::size_t bytes = padded_size * sizeof(float);
     const std::size_t aligned_bytes = (bytes + 63) & ~63;
-    data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
 
-    std::memset(data_, 0, aligned_bytes);
-}
+    auto* raw_ptr = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
+    std::memset(raw_ptr, 0, aligned_bytes);
 
-Tensor::~Tensor() {
-    if (data_ != nullptr) std::free(data_);
-    data_ = nullptr;
-}
-
-Tensor::Tensor(const Tensor& tensor)
-    : shape_(tensor.shape_),
-    padded_shape_(tensor.padded_shape_),
-    strides_(tensor.strides_),
-    size_(tensor.size_)
-{
-    std::size_t padded_size = 1;
-    for (const auto i : padded_shape_) padded_size *= i;
-
-    const std::size_t bytes = padded_size * sizeof(float);
-    const std::size_t aligned_bytes = (bytes + 63) & ~63;
-    data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
-    if (padded_size > 0) {
-        std::memcpy(data_, tensor.data_, aligned_bytes);
-    }
-}
-
-Tensor& Tensor::operator=(const Tensor& tensor) {
-    if (this == &tensor) return *this;
-    if (data_ != nullptr) std::free(data_);
-
-    shape_ = tensor.shape_;
-    padded_shape_ = tensor.padded_shape_;
-    strides_ = tensor.strides_;
-    size_ = tensor.size_;
-
-    std::size_t padded_size = 1;
-    for (const auto i : padded_shape_) padded_size *= i;
-
-    const std::size_t bytes = padded_size * sizeof(float);
-    const std::size_t aligned_bytes = (bytes + 63) & ~63;
-    data_ = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));
-    if (padded_size > 0) {
-        std::memcpy(data_, tensor.data_, aligned_bytes);
-    }
-
-    return *this;
-}
-
-Tensor::Tensor(Tensor&& tensor) noexcept
-    : data_(tensor.data_),
-    shape_(std::move(tensor.shape_)),
-    padded_shape_(std::move(tensor.padded_shape_)),
-    strides_(std::move(tensor.strides_)),
-    size_(tensor.size_)
-{
-    tensor.data_ = nullptr;
-    tensor.size_ = 0;
-}
-
-Tensor& Tensor::operator=(Tensor&& tensor) noexcept {
-    if (this == &tensor) return *this;
-    if (data_ != nullptr) std::free(data_);
-
-    shape_ = std::move(tensor.shape_);
-    padded_shape_ = std::move(tensor.padded_shape_);
-    strides_ = std::move(tensor.strides_);
-    size_ = tensor.size_;
-
-    data_ = tensor.data_;
-
-    tensor.data_ = nullptr;
-    tensor.size_ = 0;
-
-    return *this;
+    data_ = std::shared_ptr<float>(raw_ptr, std::free);
 }
 
 float& Tensor::operator[](const size_t index) {
-     return data_[index];
+     return data_.get()[index];
 }
 
 float Tensor::operator[](const size_t index) const {
-    return data_[index];
+    return data_.get()[index];
 }
 
 void Tensor::print() const {
@@ -133,24 +63,24 @@ void Tensor::print() const {
     if (shape_.size() == 1) {
         std::cout << "[";
         for (std::size_t i = 0; i < size_; ++i) {
-            std::cout << data_[i] << ", ";
+            std::cout << data_.get()[i] << ", ";
         }
         std::cout << "]\n";
     }else if (shape_.size() == 2) {
         for (std::size_t r = 0; r < shape_[0]; ++r) {
             std::cout << "[";
             for (std::size_t c = 0; c < shape_[1]; ++c) {
-                std::cout << data_[r * strides_[0] + c] << ", ";
+                std::cout << data_.get()[r * strides_[0] + c] << ", ";
             }
             std::cout << "]\n";
         }
     }else {
         const std::size_t limit = std::min(size_, static_cast<std::size_t>(10));
         for (std::size_t i = 0; i < limit; ++i) {
-            std::cout << data_[i] << ", ";
+            std::cout << data_.get()[i] << ", ";
         }
         if (size_ > 10) {
-            std::cout << ", ... , " << data_[size_ - 1];
+            std::cout << ", ... , " << data_.get()[size_ - 1];
         }
         std::cout << "]\n";
     }
