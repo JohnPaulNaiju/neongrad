@@ -11,5 +11,5 @@ Dense::Dense(std::size_t input_dim, std::size_t output_dim, std::size_t batch_si
 
 Tensor Dense::forward(const Tensor& tensor) {
     cache_ = tensor;
-    return gemm(tensor, weights_);
+    return gemm(tensor, weights_, bias_);
 }

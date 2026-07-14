@@ -30,10 +30,31 @@ Tensor gemm(const Tensor& A, const Tensor& B, const Tensor& bias) {
         schedule(dynamic)
     for (std::size_t i_out = 0; i_out < m1_pad; i_out += tile_size) {
         for (std::size_t j_out = 0; j_out < n2_pad; j_out += j_tile_size) {
+
+            // Bias prefill
+            const std::size_t i_end = i_out + tile_size;
+            const std::size_t j_end = j_out + j_tile_size;
+
+            for (std::size_t i = i_out; i < i_end; ++i) {
+                float* c_row = &c_ptr[i * n2_pad + j_out];
+                const float* bias_row = &bias_ptr[j_out];
+
+                for (std::size_t j = 0; j < j_tile_size; j += 16) {
+                    float32x4_t v_bias0 = vld1q_f32(bias_row + j);
+                    float32x4_t v_bias1 = vld1q_f32(bias_row + j + 4);
+                    float32x4_t v_bias2 = vld1q_f32(bias_row + j + 8);
+                    float32x4_t v_bias3 = vld1q_f32(bias_row + j + 12);
+
+                    vst1q_f32(c_row + j, v_bias0);
+                    vst1q_f32(c_row + j + 4, v_bias1);
+                    vst1q_f32(c_row + j + 8, v_bias2);
+                    vst1q_f32(c_row + j + 12, v_bias3);
+                }
+            }
+
             for (std::size_t k_out = 0; k_out < n1_pad; k_out += tile_size) {
 
-                const std::size_t i_end = i_out + tile_size;
-                const std::size_t j_end = j_out + j_tile_size;
+
                 const std::size_t k_end = k_out + tile_size;
 
                 for (std::size_t i = i_out; i < i_end; ++i) {

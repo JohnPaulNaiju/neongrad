@@ -1,9 +1,7 @@
-<div align="center">
-  <h1>NeonGrad</h1>
-  <h3>High-Performance Deep Learning Engine | C++20, ARM NEON</h3>
-  <br>
-  <img src="https://quantmatter.com/wp-content/uploads/2024/11/Why-Matrix-Multiplication-is-a-Game-Changer-in-CUDA.png" alt="NeonGrad Banner" width="800">
-</div>
+# NeonGrad
+## High-Performance Deep Learning Engine | C++20, ARM NEON
+
+
 
 A from-scratch deep learning inference and training engine written in pure C++20, featuring hand-optimized GEMM kernels with ARM NEON SIMD intrinsics, cache tiling, and OpenMP multi-core parallelism. **Zero external ML dependencies.**
 
