@@ -13,3 +13,7 @@ Tensor Dense::forward(const Tensor& tensor) {
     cache_ = tensor;
     return gemm(tensor, weights_, bias_);
 }
+
+void Dense::backward() {
+
+}

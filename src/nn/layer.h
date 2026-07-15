@@ -12,6 +12,8 @@ public:
 
     [[nodiscard]] Tensor forward(const Tensor& tensor);
 
+    void backward();
+
 private:
     Tensor weights_;
     Tensor bias_;
