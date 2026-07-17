@@ -4,11 +4,13 @@
 
 #include "core/tensor.h"
 
+enum class InitType { He, Xavier };
+
 class Dense {
 
 public:
 
-    explicit Dense(std::size_t input_dim, std::size_t output_dim, std::size_t batch_size);
+    explicit Dense(std::size_t input_dim, std::size_t output_dim, std::size_t batch_size, InitType init_type);
 
     [[nodiscard]] Tensor forward(const Tensor& tensor);
 

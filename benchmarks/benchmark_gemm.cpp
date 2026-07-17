@@ -32,6 +32,7 @@ int main() {
 
     Tensor tensor1({size, size});
     Tensor tensor2({size, size});
+    Tensor bias({1, size});
 
     std::cout << "Filling matrices with random values...\n";
 
@@ -40,7 +41,7 @@ int main() {
 
     std::cout << "Warming up cpu...\n";
 
-    Tensor tensor3 = gemm(tensor1, tensor2);
+    Tensor tensor3 = gemm(tensor1, tensor2, bias);
     std::cout << "Sanity check 1 [0]: " << tensor3[0] << "\n";
 
     std::cout << "+-----------------------------------+\n";
@@ -50,7 +51,7 @@ int main() {
     auto start_time = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < 10; ++i) {
-        tensor3 = gemm(tensor1, tensor2);
+        tensor3 = gemm(tensor1, tensor2, bias);
     }
 
     auto end_time = std::chrono::high_resolution_clock::now();

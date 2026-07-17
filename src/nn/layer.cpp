@@ -1,12 +1,21 @@
-#include "nn/layer.h"
+#include "layer.h"
+#include "initializer.h"
 #include "core/tensor_math.h"
 
-Dense::Dense(std::size_t input_dim, std::size_t output_dim, std::size_t batch_size) :
+
+Dense::Dense(std::size_t input_dim, std::size_t output_dim, std::size_t batch_size, InitType init_type) :
     weights_({input_dim, output_dim}),
     bias_({1, output_dim}),
     cache_({batch_size, input_dim})
 {
-    // initialize the weight and bias matrix
+    switch (init_type) {
+        case InitType::He:
+            init::he(weights_, input_dim);
+            break;
+        case InitType::Xavier:
+            init::xavier(weights_, input_dim, output_dim);
+            break;
+    }
 }
 
 Tensor Dense::forward(const Tensor& tensor) {

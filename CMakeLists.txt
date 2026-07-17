@@ -22,6 +22,8 @@ add_library(nn_core STATIC
         src/core/tensor.cpp
         src/core/tensor_math.cpp
         src/core/gemm_naive.cpp
+        src/nn/layer.cpp
+        src/nn/initializer.cpp
 )
 
 set_source_files_properties(src/core/gemm_naive.cpp

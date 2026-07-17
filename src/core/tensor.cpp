@@ -1,6 +1,6 @@
 // Created by John Paul Naiju on June 1, 2026
 
-#include "core/tensor.h"
+#include "tensor.h"
 #include <iostream>
 
 typedef std::vector<std::size_t> array_t;

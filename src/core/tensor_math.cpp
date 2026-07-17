@@ -1,6 +1,6 @@
 // Created by John Paul Naiju on 13/06/26.
 
-#include "core/tensor_math.h"
+#include "tensor_math.h"
 #include <arm_neon.h>
 #include <omp.h>
 
