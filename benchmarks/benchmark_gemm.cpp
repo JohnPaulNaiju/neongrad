@@ -16,7 +16,7 @@ void fill_random(Tensor& t) {
 
     float* ptr = t.data();
 
-    for (std::size_t i = 0; i < t.size(); ++i) {
+    for (std::size_t i = 0; i < t.padded_size(); ++i) {
         ptr[i] = dis(gen);
     }
 }

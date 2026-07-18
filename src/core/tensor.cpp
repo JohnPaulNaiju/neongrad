@@ -80,7 +80,7 @@ void Tensor::print() const {
             std::cout << data_.get()[i] << ", ";
         }
         if (size_ > 10) {
-            std::cout << ", ... , " << data_.get()[size_ - 1];
+            std::cout << ", ... ]\n";
         }
         std::cout << "]\n";
     }

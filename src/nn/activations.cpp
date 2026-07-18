@@ -21,10 +21,10 @@ Tensor ReLU::backward(Tensor& tensor) {
 
 }
 
-void Sigmoid::forward(Tensor& tensor) {
+void Softmax::forward(Tensor& tensor) {
 
 }
 
-Tensor Sigmoid::backward(Tensor& tensor) {
+Tensor Softmax::backward(Tensor& tensor) {
 
 }
