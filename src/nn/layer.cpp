@@ -24,5 +24,5 @@ Tensor Dense::forward(const Tensor& tensor) {
 }
 
 void Dense::backward() {
-
+    // Backprop
 }
