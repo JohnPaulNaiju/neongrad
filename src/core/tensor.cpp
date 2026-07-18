@@ -28,10 +28,10 @@ Tensor::Tensor(const array_t& shape) {
         current_stride *= padded_shape_[i-1];
     }
 
-    std::size_t padded_size = 1;
-    for (const auto i : padded_shape_) padded_size *= i;
+    padded_size_ = 1;
+    for (const auto i : padded_shape_) padded_size_ *= i;
 
-    const std::size_t bytes = padded_size * sizeof(float);
+    const std::size_t bytes = padded_size_ * sizeof(float);
     const std::size_t aligned_bytes = (bytes + 63) & ~63;
 
     auto* raw_ptr = static_cast<float*>(std::aligned_alloc(64, aligned_bytes));

@@ -5,7 +5,7 @@
 class ReLU {
 
 public:
-    Tensor forward(Tensor& tensor);
+    void forward(Tensor& tensor);
     Tensor backward(Tensor& tensor);
 
 private:
@@ -15,7 +15,7 @@ private:
 class Softmax {
 
 public:
-    Tensor forward(Tensor& tensor);
+    void forward(Tensor& tensor);
     Tensor backward(Tensor& tensor);
 
 private:

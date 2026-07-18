@@ -73,6 +73,10 @@ public:
         return size_;
     }
 
+    [[nodiscard]] std::size_t padded_size() const {
+        return padded_size_;
+    }
+
     [[nodiscard]] std::size_t ndim() const {
         return shape_.size();
     }
@@ -85,4 +89,5 @@ private:
     array_t padded_shape_;
     array_t strides_;
     std::size_t size_;
+    std::size_t padded_size_;
 };
